@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="ManagedBass" Version="4.0.2" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([System.OperatingSystem]::IsWindows())">
+    <None Include="./native/win-x64/bass.dll" CopyToOutputDirectory="PreserveNewest" Link="bass.dll" />
+  </ItemGroup>
+
+  <ItemGroup Condition="$([System.OperatingSystem]::IsMacOS())">
+    <None Include="./native/osx-arm64/libbass.dylib" CopyToOutputDirectory="PreserveNewest" Link="libbass.dylib" />
+  </ItemGroup>
+</Project>
