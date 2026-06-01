@@ -11,5 +11,5 @@ public record AudioMetadata(
     int Duration
 )
 {
-    override public string ToString() => $"{Title} / {Artist} - {Album}";
+    override public string ToString() => $"{Title} / {Artist} - {Album} [{Duration / 60}:{Duration % 60}]";
 }
