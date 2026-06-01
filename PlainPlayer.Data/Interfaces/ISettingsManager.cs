@@ -4,5 +4,5 @@ namespace PlainPlayer.Data.Interfaces;
 
 public interface ISettingsManager
 {
-    public AppSettings Load(string path);
+    public AppSettings Load(string filename);
 }

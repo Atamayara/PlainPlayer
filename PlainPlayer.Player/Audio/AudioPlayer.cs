@@ -7,7 +7,7 @@ public class AudioPlayer
 {
     public event EventHandler<PlayingStateChangedEventArgs>? StateChanged;
     private int stream = 0;
-
+    private int sync = 0;
     public AudioPlayer()
     {
         if (!Bass.Init())
@@ -17,13 +17,18 @@ public class AudioPlayer
 
     public void Load(string path)
     {
-        if (stream != 0) Stop();
+        if (sync != 0 && stream != 0)
+        {
+            Stop(true);
+        }
         stream = Bass.CreateStream(path);
         if (stream == 0)
         {
             throw new StreamCreateFailedException($"ストリームの作成に失敗しました: {Bass.LastError}");
         }
+        sync = Bass.ChannelSetSync(stream, SyncFlags.End, 0, OnTrackEnd);
     }
+
     public void PlayOrPause()
     {
         if (stream == 0)
@@ -53,7 +58,6 @@ public class AudioPlayer
             return;
         }
         Bass.ChannelPlay(stream);
-
         OnStateChanged(PlayingState.Playing, PlayingReason.UserAction);
     }
 
@@ -75,8 +79,11 @@ public class AudioPlayer
             OnStateChanged(PlayingState.Stopped, PlayingReason.Error, "再生ストリームがありません");
             return;
         }
+        Bass.ChannelRemoveSync(stream, sync);
         Bass.ChannelStop(stream);
         Bass.StreamFree(stream);
+        sync = 0;
+        stream = 0;
         OnStateChanged(PlayingState.Stopped, isSystemAction ? PlayingReason.SystemAction : PlayingReason.UserAction);
     }
 
@@ -102,8 +109,13 @@ public class AudioPlayer
         {
             OnStateChanged(PlayingState.RequestPrevious, PlayingReason.SystemAction);
         }
-        Bass.ChannelSetPosition(stream, 1);
+        Bass.ChannelSetPosition(stream, 0);
         Play();
+    }
+
+    private void OnTrackEnd(int handle, int channel, int data, IntPtr user)
+    {
+        OnStateChanged(PlayingState.Stopped, PlayingReason.Finished);
     }
 
     private void OnStateChanged(PlayingState newState, PlayingReason reason, string? message = null)
