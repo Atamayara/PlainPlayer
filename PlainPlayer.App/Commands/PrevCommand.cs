@@ -1,6 +1,4 @@
-using PlainPlayer.Data.Models;
 using PlainPlayer.Player.Audio;
-using PlainPlayer.Player.Exceptions;
 
 namespace PlainPlayer.App.Commands;
 

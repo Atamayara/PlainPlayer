@@ -3,17 +3,15 @@ using PlainPlayer.Data.Models;
 
 namespace PlainPlayer.App.Commands;
 
-public class SearchCommand(List<AudioMetadata> _queue, AppDataContext _appData, ref int _currentIndex) : ICommand
+public class SearchCommand(PlayQueue _queue, AppDataContext _appData) : ICommand
 {
     public string Name => "Search";
     public string Description => "楽曲 / アルバム / アーティスト / プレイリストを検索します";
-    private readonly List<AudioMetadata> queue = _queue;
+    private readonly PlayQueue queue = _queue;
     private readonly AppDataContext appData = _appData;
-
-    private readonly int currentIndex = _currentIndex;
     public void Execute()
     {
-        Console.Write("キーワードを入力してください\n>> ");
+        Console.Write("キーワードを入力してください\n> ");
         var input = Console.ReadLine();
 
         if (string.IsNullOrEmpty(input))
@@ -98,15 +96,19 @@ public class SearchCommand(List<AudioMetadata> _queue, AppDataContext _appData, 
 
                     case ConsoleKey.P:
                         mode = SearchMode.Playlists;
+                        page = 0;
                         break;
                     case ConsoleKey.A:
                         mode = SearchMode.Albums;
+                        page = 0;
                         break;
                     case ConsoleKey.R:
                         mode = SearchMode.Artists;
+                        page = 0;
                         break;
                     case ConsoleKey.S:
                         mode = SearchMode.Songs;
+                        page = 0;
                         break;
                     case ConsoleKey.C:
                         Console.WriteLine($"{key}");
@@ -126,9 +128,10 @@ public class SearchCommand(List<AudioMetadata> _queue, AppDataContext _appData, 
         do
         {
             Console.Write($"N: 次に再生 / L: キューの終わりに追加 / R: ランダム再生{(!isRandom ? "する" : "しない")} / C: キャンセル\n> ");
-            var key = Console.ReadKey(true).Key;
+            ConsoleKey key;
             do
             {
+                key = Console.ReadKey(true).Key;
                 switch (key)
                 {
                     case ConsoleKey.N:
@@ -183,9 +186,9 @@ public class SearchCommand(List<AudioMetadata> _queue, AppDataContext _appData, 
             songList = [.. songArray];
         }
         if (isNext)
-            queue.InsertRange(currentIndex + 1, songList);
+            queue.InsertSongs(1, songList);
         else
-            queue.AddRange(songList);
+            queue.AddSongs(songList);
     }
 }
 

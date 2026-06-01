@@ -60,5 +60,8 @@ nunit-*.xml
 .DS_Store
 .vscode
 
+# Publish
+Export/
+
 # Test
 PlainPlayer.App/settings.yml

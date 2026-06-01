@@ -17,7 +17,8 @@ public class RekordboxXmlLoader : ILibraryLoader
         foreach (var e in document.Root?.Elements("COLLECTION").Elements("TRACK").Where(e => acceptedFormats.Contains(e.Attribute("Kind")?.Value)) ?? [])
         {
             var id = e.Attribute("TrackID")?.Value ?? "";
-            var filepath = Uri.UnescapeDataString(e.Attribute("Location")?.Value ?? "").Replace("file://localhost", ""); // [TODO]: Windows?
+            var builder = new UriBuilder(e.Attribute("Location")?.Value ?? "") { Host = string.Empty };
+            var filepath = builder.Uri.LocalPath;
             var title = e.Attribute("Name")?.Value ?? "不明なタイトル";
             var artist = e.Attribute("Artist")?.Value ?? "不明なアーティスト";
             var album = e.Attribute("Album")?.Value ?? "不明なアルバム";
@@ -29,7 +30,7 @@ public class RekordboxXmlLoader : ILibraryLoader
                 duration = 0;
 
             songs.Add(new AudioMetadata(
-                id, filepath, title, artist, album,  trackNumber, discNumber, duration
+                id, filepath, title, artist, album, trackNumber, discNumber, duration
             ));
         }
 
@@ -42,6 +43,7 @@ public class RekordboxXmlLoader : ILibraryLoader
             ));
         }
 
+        Console.WriteLine("Notice: rekordbox xmlを読み込みました");
         return (songs, playlists);
     }
 }

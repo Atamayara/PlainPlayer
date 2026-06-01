@@ -11,7 +11,5 @@
     <ProjectReference Include="../PlainPlayer.Data/PlainPlayer.Data.csproj" />
     <ProjectReference Include="../PlainPlayer.IO/PlainPlayer.IO.csproj" />
     <ProjectReference Include="../PlainPlayer.Player/PlainPlayer.Player.csproj" />
-    <Content Update="setting.yml">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory> <CopyToPublishDirectory>Never</CopyToPublishDirectory> </Content>
   </ItemGroup>
 </Project>
