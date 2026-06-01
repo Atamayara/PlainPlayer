@@ -14,7 +14,7 @@ class Program
     private static readonly PlayQueue queue = new();
     static public void Main(string[] args)
     {
-        Console.WriteLine("PlainPlayer - v0.0.1\n");
+        Console.WriteLine("PlainPlayer - v0.1.1q\n");
 
         player.StateChanged += OnStateChanged;
 
